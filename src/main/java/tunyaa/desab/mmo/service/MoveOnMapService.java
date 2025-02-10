@@ -1,7 +1,7 @@
-package Tunyaa.Desab.service;
+package tunyaa.desab.mmo.service;
 
-import Tunyaa.Desab.model.Person;
-import Tunyaa.Desab.model.ViewMap;
+import tunyaa.desab.mmo.model.Person;
+import tunyaa.desab.mmo.model.ViewMap;
 
 
 

@@ -1,4 +1,4 @@
-package Tunyaa.Desab.model;
+package tunyaa.desab.mmo.model;
 
 /**
  *

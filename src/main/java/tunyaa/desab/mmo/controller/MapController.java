@@ -1,6 +1,6 @@
-package Tunyaa.Desab.controller;
+package tunyaa.desab.mmo.controller;
 
-import Tunyaa.Desab.model.ViewMap;
+import tunyaa.desab.mmo.model.ViewMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.annotation.SessionScope;
 
-
 /**
  *
  * @author sergey
@@ -25,7 +24,6 @@ public class MapController {
 
     @Autowired
     private ViewMap viewMap;
-
 
 //    @GetMapping("/map")
 //    public String getMap(@RequestParam(required = false) String move, @RequestParam(required = false) String newMap, Model model) {
@@ -48,7 +46,6 @@ public class MapController {
 //        model.addAttribute("map", viewMap.getBlackMap());
 //        return "map.html";
 //    }
-
     @GetMapping("/map/table")
     public String getMapTable(@RequestParam(required = false) String move, Model model) {
         if (move != null) {
@@ -66,7 +63,7 @@ public class MapController {
         model.addAttribute("map", viewMap.getBlackMap());
         return "fragments :: mapTable"; // Используем фрагмент Thymeleaf для возвращения таблицы
     }
-    
+
     @GetMapping("/map")
     public String getMap(@RequestParam(required = false) String newMap, Model model) {
         if (newMap != null) {
@@ -75,6 +72,5 @@ public class MapController {
         model.addAttribute("map", viewMap.getBlackMap());
         return "map.html";
     }
-
 
 }

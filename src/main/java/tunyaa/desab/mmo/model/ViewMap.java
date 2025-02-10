@@ -1,4 +1,4 @@
-package Tunyaa.Desab.model;
+package tunyaa.desab.mmo.model;
 
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.annotation.SessionScope;
-import static Tunyaa.Desab.model.Field.*;
+import static tunyaa.desab.mmo.model.Field.*;
 
 /**
  *
@@ -31,14 +31,14 @@ public class ViewMap {
     @PostConstruct
     public void postConstruct() {
         //Создаём копию карты, которая заполнена ссылками на картинки
-        viewMap = new String[map.size()][map.get(0).size()];
+        viewMap = new String[map.getSizeY()][map.get(0).size()];
         //Ставим персонажа в рандомное место
         personRandomPointStart();
     }
 
     @Deprecated(since = "Use getBlackMap")
     public String[][] getViewMap() {
-        for (int i = 0; i < map.size(); i++) {
+        for (int i = 0; i < map.getSizeY(); i++) {
             for (int j = 0; j < map.get(i).size(); j++) {
                 viewMap[i][j] = mapConverter(map.get(i).get(j));
             }
@@ -50,25 +50,28 @@ public class ViewMap {
     public String[][] getBlackMap() {
 
         //Вся карта заполняется черными полями
-        for (int i = 0; i < map.size(); i++) {
+        for (int i = 0; i < map.getSizeY(); i++) {
             for (int j = 0; j < map.get(i).size(); j++) {
                 viewMap[i][j] = "black.png";
             }
         }
 
         //Зона видимости
-        int Area = 5;// обзор Area X Area вокруг персонажа
+        int Area = 3;// обзор Area X Area вокруг персонажа
 
         //Если указатель выходит за пределы массива
         int y = person.getY() - Area < 0 ? 0 : person.getY() - Area;
         int x = person.getX() - Area < 0 ? 0 : person.getX() - Area;
 
-        int yQ = person.getY() + Area > map.size() - 1 ? map.size() - 1 : person.getY() + Area;
-        int xQ = person.getX() + Area > map.size() - 1 ? map.size() - 1 : person.getX() + Area;
+        int yQ = person.getY() + Area > map.getSizeY() - 1 ? map.getSizeY() - 1 : person.getY() + Area;
+        int xQ = person.getX() + Area > map.getSizeX() - 1 ? map.getSizeX() - 1 : person.getX() + Area;
 
         //Заполнение зоны видимости ссылками на картинку
         for (int i = y; i <= yQ; i++) {
             for (int j = x; j <= xQ; j++) {
+                if (i == y && j == x || i == y && j == xQ || i == yQ && j == x || i == yQ && j == xQ) {
+                    continue;
+                }
                 viewMap[i][j] = mapConverter(map.get(i).get(j));
             }
         }
@@ -110,8 +113,8 @@ public class ViewMap {
         boolean start = false;
 
         while (!start) {
-            int x = random.nextInt(map.size());
-            int y = random.nextInt(map.size());
+            int x = random.nextInt(map.getSizeX());
+            int y = random.nextInt(map.getSizeY());
 
             if (map.get(y).get(x) == GRASS) {
                 map.get(y).set(x, PERSON);
@@ -131,6 +134,10 @@ public class ViewMap {
         personRandomPointStart();
     }
 
+    public void addMonster(){
+        map.objectSpawn(4, MONSTER);
+    }
+    
     public void up() {
 
         if (map.get(person.getY() - 1).get(person.getX()) == GRASS) {

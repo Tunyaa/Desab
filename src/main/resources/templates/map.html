@@ -31,14 +31,14 @@
             /* Левая боковая панель */
             .left-sidebar {
                 background-color: #f4f4f4;
-                width: 200px;
+                width: 100px;
                 padding: 15px;
             }
 
             /* Правая боковая панель */
             .right-sidebar {
                 background-color: #f4f4f4;
-                width: 200px;
+                width: 100px;
                 padding: 15px;
             }
 
@@ -70,31 +70,31 @@
                 let move;
 
                 // Определяем, какую клавишу нажали
-                if (event.key === "w") {
+                if (event.key === "w" || event.key === "ц") {
                     move = "↑"; // Символ для перемещения вверх
-                } else if (event.key === "s") {
+                } else if (event.key === "s" || event.key === "ы") {
                     move = "↓"; // Символ для перемещения вниз
-                } else if (event.key === "a") {
+                } else if (event.key === "a" || event.key === "ф") {
                     move = "←"; // Символ для перемещения влево
-                } else if (event.key === "d") {
+                } else if (event.key === "d" || event.key === "в") {
                     move = "→"; // Символ для перемещения вправо
                 }
 
                 // Если задано движение, отправляем запрос
                 if (move) {
                     fetch(`/map/table?move=${encodeURIComponent(move)}`) // Обратите внимание на /map/table
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Ошибка сети');
-                            }
-                            return response.text(); // Обработка текстового ответа
-                        })
-                        .then(tableHTML => {
-                            updateTable(tableHTML); // Обновление таблицы на странице
-                        })
-                        .catch(error => {
-                            console.error('Ошибка:', error);
-                        });
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Ошибка сети');
+                                }
+                                return response.text(); // Обработка текстового ответа
+                            })
+                            .then(tableHTML => {
+                                updateTable(tableHTML); // Обновление таблицы на странице
+                            })
+                            .catch(error => {
+                                console.error('Ошибка:', error);
+                            });
                 }
             });
         });
@@ -104,9 +104,33 @@
             const tableElement = document.getElementById('mapTable'); // Элемент таблицы
             tableElement.innerHTML = tableHTML; // Обновляем содержимое таблицы
         }
+
+
+        // Пример функции, которая будет получать обновленное содержимое таблицы
+        function fetchAndUpdateTable() {
+            fetch(`/map/table`) // Меняем на ваш URL, если нужно
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка сети');
+                        }
+                        return response.text(); // Ожидаем, что сервер вернет HTML-код таблицы
+                    })
+                    .then(tableHTML => {
+                        updateTable(tableHTML); // Обновляем таблицу
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при обновлении таблицы:', error);
+                    });
+        }
+
+// Устанавливаем интервал обновления таблицы каждую секунду (1000 миллисекунд)
+        setInterval(fetchAndUpdateTable, 200);
+
+
     </script>
 
-    
+
+
 
 
     <body>
@@ -123,9 +147,13 @@
             <aside class="left-sidebar">
                 <h2>Левая панель</h2>
                 <a href="/map?newMap" >Новая карта</a>
+                <a href="/map/table?add" > Добавить </a>
 
                 <a th:href="@{/}" > </a>
-                <a th:href="@{/}" > </a>
+
+
+
+
             </aside>
 
             <!-- Центральная часть -->
@@ -133,16 +161,16 @@
 
                 <h1></h1>
 
-                <h1>Управление картой</h1>
-    <table border="0" id="mapTable">
-        <tbody th:fragment="mapTable">
-            <tr th:each="row : ${map}">
-                <td th:each="fiefd : ${row}">
-                    <img th:src="@{/{fiefd}(fiefd=${fiefd})}" alt="Image" style="width: 30px; height: auto;"/>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+                <table border="0" id="mapTable">
+                    <tbody th:fragment="mapTable">
+                        <tr th:each="row : ${map}">
+                            <td th:each="fiefd : ${row}">
+                                <img th:src="@{/{fiefd}(fiefd=${fiefd})}" alt="Image" style="width: 30px; height: auto;"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
 
@@ -189,7 +217,7 @@
 
         <!-- Нижняя часть (футер) -->
         <footer>
-            <p>Футер страницы &copy; 2023</p>
+            <b>Упарвление: (↑↓←→ - wsad) </b>
         </footer>
     </body>
 
