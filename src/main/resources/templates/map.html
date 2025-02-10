@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th"http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Разделённая страница</title>
+        <style>
+            /* Общие стили */
+            body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            /* Шапка */
+            header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px;
+                text-align: center;
+            }
+
+            /* Основной контейнер */
+            .container {
+                display: flex;
+                flex: 1;
+            }
+
+            /* Левая боковая панель */
+            .left-sidebar {
+                background-color: #f4f4f4;
+                width: 200px;
+                padding: 15px;
+            }
+
+            /* Правая боковая панель */
+            .right-sidebar {
+                background-color: #f4f4f4;
+                width: 200px;
+                padding: 15px;
+            }
+
+            /* Центральная часть */
+            .main-content {
+                flex: 1;
+                padding: 15px;
+                background-color: #e0e0e0;
+            }
+
+            /* Нижняя часть (футер) */
+            footer {
+                background-color: #333;
+                color: white;
+                padding: 10px;
+                text-align: center;
+            }
+        </style>
+
+
+
+    </head>
+
+    <title>Keyboard Event</title>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("keydown", function (event) {
+                let move;
+
+                // Определяем, какую клавишу нажали
+                if (event.key === "w") {
+                    move = "↑"; // Символ для перемещения вверх
+                } else if (event.key === "s") {
+                    move = "↓"; // Символ для перемещения вниз
+                } else if (event.key === "a") {
+                    move = "←"; // Символ для перемещения влево
+                } else if (event.key === "d") {
+                    move = "→"; // Символ для перемещения вправо
+                }
+
+                // Если задано движение, отправляем запрос
+                if (move) {
+                    fetch(`/map/table?move=${encodeURIComponent(move)}`) // Обратите внимание на /map/table
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Ошибка сети');
+                            }
+                            return response.text(); // Обработка текстового ответа
+                        })
+                        .then(tableHTML => {
+                            updateTable(tableHTML); // Обновление таблицы на странице
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                        });
+                }
+            });
+        });
+
+        // Функция для обновления таблицы
+        function updateTable(tableHTML) {
+            const tableElement = document.getElementById('mapTable'); // Элемент таблицы
+            tableElement.innerHTML = tableHTML; // Обновляем содержимое таблицы
+        }
+    </script>
+
+    
+
+
+    <body>
+        <!-- Шапка -->
+        <header>
+            <a href="/" >Главная</a>
+
+
+        </header>
+
+        <!-- Основной контейнер -->
+        <div class="container">
+            <!-- Левая боковая панель -->
+            <aside class="left-sidebar">
+                <h2>Левая панель</h2>
+                <a href="/map?newMap" >Новая карта</a>
+
+                <a th:href="@{/}" > </a>
+                <a th:href="@{/}" > </a>
+            </aside>
+
+            <!-- Центральная часть -->
+            <main class="main-content">
+
+                <h1></h1>
+
+                <h1>Управление картой</h1>
+    <table border="0" id="mapTable">
+        <tbody th:fragment="mapTable">
+            <tr th:each="row : ${map}">
+                <td th:each="fiefd : ${row}">
+                    <img th:src="@{/{fiefd}(fiefd=${fiefd})}" alt="Image" style="width: 30px; height: auto;"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+            </main>
+
+            <!-- Правая боковая панель -->
+            <aside class="right-sidebar">
+
+
+                <h2>Правая панель</h2>
+
+
+
+                <table>
+                    <tr>
+                        <td></td>
+                        <td><form method="GET" action="/map">
+                                <input type="submit" name="move" value="↑"/>
+                            </form></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><form method="GET" action="/map">
+                                <input type="submit" name="move" value="←" />
+                            </form></td>
+                        <td></td>
+                        <td><form method="GET" action="/map">
+                                <input type="submit" name="move" value="→" />
+                            </form></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><form method="GET" action="/map">
+                                <input type="submit" name="move" value="↓" />
+                            </form></td>
+                        <td></td>
+                    </tr>
+                </table>
+
+
+
+            </aside>
+        </div>
+
+        <!-- Нижняя часть (футер) -->
+        <footer>
+            <p>Футер страницы &copy; 2023</p>
+        </footer>
+    </body>
+
+</html>
